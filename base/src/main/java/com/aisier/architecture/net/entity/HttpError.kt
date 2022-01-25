@@ -1,6 +1,6 @@
-package com.aisier.network.entity
+package com.aisier.architecture.net.entity
 
-import com.aisier.network.toast
+import com.aisier.architecture.util.ToastUtil
 import com.google.gson.JsonParseException
 import retrofit2.HttpException
 import java.net.SocketTimeoutException
@@ -13,13 +13,13 @@ enum class HttpError(var code: Int, var errorMsg: String) {
 }
 
 internal fun handlingApiExceptions(code: Int?, errorMsg: String?) = when (code) {
-    HttpError.TOKEN_EXPIRE.code -> toast(HttpError.TOKEN_EXPIRE.errorMsg)
-    HttpError.PARAMS_ERROR.code -> toast(HttpError.PARAMS_ERROR.errorMsg)
-    else -> errorMsg?.let { toast(it) }
+    HttpError.TOKEN_EXPIRE.code -> ToastUtil.showSingleToast(HttpError.TOKEN_EXPIRE.errorMsg)
+    HttpError.PARAMS_ERROR.code -> ToastUtil.showSingleToast(HttpError.PARAMS_ERROR.errorMsg)
+    else -> errorMsg?.let { ToastUtil.showSingleToast(it) }
 }
 
 internal fun handlingExceptions(e: Throwable) = when (e) {
-    is HttpException -> toast(e.message())
+    is HttpException -> ToastUtil.showSingleToast(e.message())
 
     is CancellationException -> {
     }

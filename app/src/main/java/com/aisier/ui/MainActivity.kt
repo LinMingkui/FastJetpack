@@ -1,12 +1,13 @@
 package com.aisier.ui
 
+import android.os.Bundle
 import com.aisier.R
-import com.aisier.architecture.base.BaseToolBarActivity
+import com.aisier.architecture.base.BaseBindingActivity
+import com.aisier.databinding.ActivityHomeBinding
 
-class MainActivity : BaseToolBarActivity(R.layout.activity_home) {
+class MainActivity : BaseBindingActivity<ActivityHomeBinding>(R.layout.activity_home) {
 
-    override fun init() = Unit
+    override fun init(savedInstanceState: Bundle?) {
 
-    override fun isShowBackArrow(): Boolean = false
-
+    }
 }

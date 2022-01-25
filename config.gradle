@@ -14,7 +14,7 @@ ext {
 
     dependencies = [
 
-            "lifecycle-runtime-ktx": "androidx.lifecycle:lifecycle-runtime-ktx:${version["lifecycleVersion"]}",
+            "lifecycle-runtime-ktx": "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0",
 
             "appcompat"            : "androidx.appcompat:appcompat:1.4.0",
             "recyclerview"         : "androidx.recyclerview:recyclerview:1.2.0",
@@ -30,13 +30,11 @@ ext {
     ]
 
     netDependencies = [
-            "lifecycle-runtime-ktx": "androidx.lifecycle:lifecycle-runtime-ktx:${version["lifecycleVersion"]}",
+            "lifecycle-runtime-ktx": "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0",
 
             "core-ktx"             : "androidx.core:core-ktx:1.6.0-beta01",
             "livedata-ktx"         : "androidx.lifecycle:lifecycle-livedata-ktx:2.2.0",
 
-            //为了不引入Context，先用LiveDataBus发送toast
-            "livedatabus"          : 'io.github.jeremyliao:live-event-bus-x:1.8.0',
 
             "gson"                 : "com.google.code.gson:gson:2.8.6",
             "okhttp3"              : "com.squareup.okhttp3:okhttp:4.1.0",

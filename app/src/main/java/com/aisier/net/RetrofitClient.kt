@@ -1,6 +1,6 @@
 package com.aisier.net
 
-import com.aisier.network.base.BaseRetrofitClient
+import com.aisier.architecture.net.base.BaseRetrofitClient
 import okhttp3.OkHttpClient
 
 object RetrofitClient : BaseRetrofitClient() {

@@ -2,14 +2,20 @@ package com.aisier.net
 
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
-import com.aisier.network.base.BaseRepository
-import com.aisier.network.entity.ApiResponse
+import com.aisier.architecture.net.base.BaseRepository
+import com.aisier.architecture.net.entity.ApiResponse
 
 class WxArticleRepository : BaseRepository() {
 
     private val mService by lazy {
         RetrofitClient.service
     }
+
+//    suspend fun fetchWxArticleFromNet(): ApiResponse<List<WxArticleBean>> {
+//        return executeHttp {
+//            mService.getWxArticle()
+//        }
+//    }
 
     suspend fun fetchWxArticleFromNet(): ApiResponse<List<WxArticleBean>> {
         return executeHttp {

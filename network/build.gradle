@@ -1,7 +1,0 @@
-apply from: "../common.gradle"
-
-def apiDependencies = rootProject.ext.netDependencies
-
-dependencies {
-    apiDependencies.each { k, v -> api v }
-}

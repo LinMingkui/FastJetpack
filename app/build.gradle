@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -29,18 +30,14 @@ android {
         jvmTarget = '1.8'
     }
 
-    viewBinding {
-        enabled = true
-    }
     buildFeatures {
-        viewBinding true
+        dataBinding = true
     }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':base')
-    implementation project(path: ':network')
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 

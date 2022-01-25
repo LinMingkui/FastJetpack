@@ -6,9 +6,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.aisier.architecture.base.IUiView
-import com.aisier.network.entity.ApiResponse
-import com.aisier.network.ResultBuilder
-import com.aisier.network.parseData
+import com.aisier.architecture.net.ResultBuilder
+import com.aisier.architecture.net.entity.ApiResponse
+import com.aisier.architecture.net.entity.ApiStartResponse
+import com.aisier.architecture.net.parseData
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -21,6 +22,7 @@ fun <T> launchFlow(
         emit(requestBlock())
     }.onStart {
         startCallback?.invoke()
+        emit(ApiStartResponse())
     }.onCompletion {
         completeCallback?.invoke()
     }

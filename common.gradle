@@ -1,5 +1,6 @@
 apply plugin:'com.android.library'
 apply plugin:'kotlin-android'
+apply plugin:'kotlin-kapt'
 
 android {
     def android = rootProject.ext.android
@@ -22,7 +23,13 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-    viewBinding {
-        enabled = true
+//    viewBinding {
+//        enabled = true
+//    }
+//    dataBinding{
+//        enabled = true
+//    }
+    buildFeatures{
+        dataBinding = true
     }
 }

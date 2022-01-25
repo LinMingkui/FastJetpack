@@ -1,4 +1,4 @@
-package com.aisier.network.entity
+package com.aisier.architecture.net.entity
 
 import java.io.Serializable
 
@@ -21,6 +21,10 @@ open class ApiResponse<T>(
 data class ApiSuccessResponse<T>(val response: T) : ApiResponse<T>(data = response)
 
 class ApiEmptyResponse<T> : ApiResponse<T>()
+
+class ApiStartResponse<T> : ApiResponse<T>()
+
+class ApiCompleteResponse<T> : ApiResponse<T>()
 
 data class ApiFailedResponse<T>(override val errorCode: Int?, override val errorMsg: String?) : ApiResponse<T>(errorCode = errorCode, errorMsg = errorMsg)
 

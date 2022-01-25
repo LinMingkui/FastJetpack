@@ -1,10 +1,11 @@
-package com.aisier.network
+package com.aisier.architecture.net
 
 import androidx.annotation.MainThread
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.aisier.network.entity.ApiResponse
+import com.aisier.architecture.net.ResultBuilder
+import com.aisier.architecture.net.entity.ApiResponse
 
 /**
  * <pre>
@@ -14,11 +15,11 @@ import com.aisier.network.entity.ApiResponse
  * version: 1.1
 </pre> *
  */
-typealias StateLiveData<T> = LiveData<ApiResponse<T>>
-typealias StateMutableLiveData<T> = MutableLiveData<ApiResponse<T>>
+typealias ResponseLiveData<T> = LiveData<ApiResponse<T>>
+typealias ResponseMutableLiveData<T> = MutableLiveData<ApiResponse<T>>
 
 @MainThread
-fun <T> StateMutableLiveData<T>.observeState(
+fun <T> ResponseMutableLiveData<T>.observeResult(
     owner: LifecycleOwner,
     listenerBuilder: ResultBuilder<T>.() -> Unit,
 ) {
@@ -26,7 +27,7 @@ fun <T> StateMutableLiveData<T>.observeState(
 }
 
 @MainThread
-fun <T> LiveData<ApiResponse<T>>.observeState(
+fun <T> LiveData<ApiResponse<T>>.observeResult(
     owner: LifecycleOwner,
     listenerBuilder: ResultBuilder<T>.() -> Unit,
 ) {

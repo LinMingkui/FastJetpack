@@ -1,4 +1,4 @@
-package com.aisier.network.base
+package com.aisier.architecture.net.base
 
 import androidx.viewbinding.BuildConfig
 import okhttp3.OkHttpClient

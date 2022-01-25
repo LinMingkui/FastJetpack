@@ -2,7 +2,7 @@ package com.aisier.net
 
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
-import com.aisier.network.entity.ApiResponse
+import com.aisier.architecture.net.entity.ApiResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
