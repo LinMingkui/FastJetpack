@@ -1,14 +1,20 @@
 package com.aisier.vm
 
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.aisier.architecture.base.BaseViewModel
 import com.aisier.architecture.net.entity.ApiResponse
-import com.aisier.architecture.net.launchRequestOnIO
+import com.aisier.architecture.net.launchRequestWithLoading
 import com.aisier.architecture.net.launchRequestWithLoadingOnIO
+import com.aisier.architecture.net.parseData
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
 import com.aisier.net.WxArticleRepository
+import com.apkfuns.logutils.LogUtils
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 /**
  * <pre>
@@ -26,6 +32,12 @@ class ApiViewModel : BaseViewModel() {
 
     private val _uiState = MutableStateFlow<ApiResponse<List<WxArticleBean>>>(ApiResponse())
     fun fetchWxArticleFromNet() {
+        viewModelScope.launch {
+            launchRequestWithLoading({ repository.fetchWxArticleFromNet() }).collect {
+                it.parseData { LogUtils.i(it.javaClass.simpleName) }
+                articleLiveData.value = it
+            }
+        }
         launchRequestWithLoadingOnIO(articleLiveData, { repository.fetchWxArticleFromNet() })
     }
 

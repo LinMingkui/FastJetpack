@@ -8,8 +8,9 @@ import com.aisier.R
 import com.aisier.architecture.base.BaseBindingFragment
 import com.aisier.architecture.net.launchAndCollectIn
 import com.aisier.architecture.net.launchRequestWithLoading
+import com.aisier.architecture.net.launchRequestWithLoadingOnIO
 import com.aisier.architecture.net.observeResult
-import com.aisier.databinding.FragmentNetListBinding
+import com.aisier.databinding.FragmentMineBinding
 import com.aisier.net.WxArticleRepository
 import com.aisier.vm.ApiViewModel
 import com.apkfuns.logutils.LogUtils
@@ -17,7 +18,7 @@ import com.apkfuns.logutils.LogUtils
 /**
  * dev 分支去掉LiveData，使用Flow
  */
-class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fragment_net_list) {
+class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_mine) {
 
     private val mViewModel by lazy {
         getViewModel(ApiViewModel::class.java)
@@ -55,7 +56,19 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
     private fun initData() {
         mBinding?.apply {
             btnNet.setOnClickListener {
-                mViewModel.fetchWxArticleFromNet()
+//                mViewModel.fetchWxArticleFromNet()
+
+                launchRequestWithLoading({ WxArticleRepository().fetchWxArticleFromNet() })
+                    .asLiveData()
+//                    .observe(this@NetListFragment){
+//                        mViewModel.articleLiveData.value=it
+//                    }
+                    .observeResult(this@MineFragment) {
+                        onSuccess
+                    }
+                launchRequestWithLoadingOnIO({ WxArticleRepository().fetchWxArticleFromNet() }) {
+
+                }
             }
 
             btnNetError.setOnClickListener {

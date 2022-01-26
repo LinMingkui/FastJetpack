@@ -2,18 +2,14 @@ package com.aisier.ui.fragment
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.aisier.R
 import com.aisier.architecture.base.BaseBindingFragment
-import com.aisier.databinding.FragmentSavedStateBinding
+import com.aisier.databinding.FragmentDownloadBinding
 import com.aisier.vm.SavedStateViewModel
 
-class SavedStateFragment :
-    BaseBindingFragment<FragmentSavedStateBinding>(R.layout.fragment_saved_state) {
+class DownloadFragment :
+    BaseBindingFragment<FragmentDownloadBinding>(R.layout.fragment_download) {
 
     private val stateViewModel by viewModels<SavedStateViewModel>()
 

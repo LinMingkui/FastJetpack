@@ -42,8 +42,8 @@ fun <T> BaseViewModel.launchRequestWithLoading(
 ): Flow<ApiResponse<T>> {
     return launchRequest(
         { requestBlock.invoke() },
-        { viewEffectLiveData.postValue(ViewEffect.ShowLoading(msg, cancelable)) },
-        { viewEffectLiveData.postValue(ViewEffect.HideLoading) }
+        { viewEffectLiveData.value = ViewEffect.ShowLoading(msg, cancelable) },
+        { viewEffectLiveData.value = ViewEffect.HideLoading }
     )
 }
 
@@ -60,7 +60,11 @@ fun <T> BaseViewModel.launchRequestOnIO(
     viewModelScope.launch {
         launchRequest(requestBlock, startCallback, completeCallback)
             .collect {
-                resultLiveData.postValue(it)
+//                if (it is ApiCompleteResponse) {
+//                    resultLiveData.postValue(it)
+//                } else {
+                resultLiveData.value = it
+//                }
             }
     }
 }
@@ -96,8 +100,8 @@ fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
     launchRequestOnIO(
         resultLiveData,
         requestBlock,
-        { viewEffectLiveData.postValue(ViewEffect.ShowLoading(msg, cancelable)) },
-        { viewEffectLiveData.postValue(ViewEffect.HideLoading) }
+        { viewEffectLiveData.value = ViewEffect.ShowLoading(msg, cancelable) },
+        { viewEffectLiveData.value = ViewEffect.HideLoading }
     )
 }
 
@@ -113,8 +117,8 @@ fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
 ) {
     launchRequestOnIO(
         requestBlock,
-        { viewEffectLiveData.postValue(ViewEffect.ShowLoading(msg, cancelable)) },
-        { viewEffectLiveData.postValue(ViewEffect.HideLoading) },
+        { viewEffectLiveData.value = ViewEffect.ShowLoading(msg, cancelable) },
+        { viewEffectLiveData.value = ViewEffect.HideLoading },
         listenerBuilder
     )
 }
@@ -149,7 +153,7 @@ fun <T> IUiView.launchRequestOnIO(
     lifecycleScope.launch {
         launchRequest(requestBlock, startCallback, completeCallback)
             .collect {
-                resultLiveData.postValue(it)
+                resultLiveData.value = it
             }
     }
 }

@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.aisier.ui.fragment.MainFragment"
+        android:name="com.aisier.ui.fragment.SearchFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main">
+        tools:layout="@layout/fragment_search">
         <action
             android:id="@+id/action_mainFragment_to_netListFragment"
             app:destination="@id/netListFragment" />
@@ -20,12 +20,12 @@
 
     <fragment
         android:id="@+id/netListFragment"
-        android:name="com.aisier.ui.fragment.NetListFragment"
+        android:name="com.aisier.ui.fragment.MineFragment"
         android:label="fragment_net_list"
-        tools:layout="@layout/fragment_net_list" />
+        tools:layout="@layout/fragment_mine" />
     <fragment
         android:id="@+id/savedStateFragment"
-        android:name="com.aisier.ui.fragment.SavedStateFragment"
+        android:name="com.aisier.ui.fragment.DownloadFragment"
         android:label="fragment_saved_state"
-        tools:layout="@layout/fragment_saved_state" />
+        tools:layout="@layout/fragment_download" />
 </navigation>
