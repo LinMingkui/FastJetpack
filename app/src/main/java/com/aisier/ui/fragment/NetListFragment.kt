@@ -3,13 +3,11 @@ package com.aisier.ui.fragment
 import android.os.Bundle
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.asLiveData
 import com.aisier.R
 import com.aisier.architecture.base.BaseBindingFragment
-import com.aisier.architecture.net.launchRequest
-import com.aisier.architecture.net.launchRequestWithLoadingOnIO
-import com.aisier.architecture.net.launchWithLoadingAndCollect
+import com.aisier.architecture.net.launchAndCollectIn
+import com.aisier.architecture.net.launchRequestWithLoading
 import com.aisier.architecture.net.observeResult
 import com.aisier.databinding.FragmentNetListBinding
 import com.aisier.net.WxArticleRepository
@@ -21,28 +19,28 @@ import com.apkfuns.logutils.LogUtils
  */
 class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fragment_net_list) {
 
-    // navigation情况下不能用Activity的ViewModel
-    private val mViewModel by viewModels<ApiViewModel>()
-
+    private val mViewModel by lazy {
+        getViewModel(ApiViewModel::class.java)
+    }
 
     override fun init(savedInstanceState: Bundle?) {
         initData()
         mViewModel.articleLiveData.observeResult(viewLifecycleOwner) {
             onSuccess = {
                 mBinding?.tvContent?.text = it.toString()
-                LogUtils.e("Success")
+                LogUtils.i("Success")
             }
-            onFailed = { c, m ->
-                LogUtils.e("onFailed code=$c,msg=$m")
-            }
-            onError = {
-                LogUtils.e("onError $it")
-            }
+//            onFailed = { c, m ->
+//                LogUtils.e("onFailed code=$c,msg=$m")
+//            }
+//            onError = {
+//                LogUtils.e("onError $it")
+//            }
             onStart = {
-                LogUtils.e("onStart")
+                LogUtils.i("onStart")
             }
             onComplete = {
-                LogUtils.e("onComplete")
+                LogUtils.i("onComplete")
             }
         }
     }
@@ -57,14 +55,20 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
     private fun initData() {
         mBinding?.apply {
             btnNet.setOnClickListener {
-//            requestNet()
-                mViewModel.requestNet()
+                mViewModel.fetchWxArticleFromNet()
             }
 
             btnNetError.setOnClickListener {
                 showNetErrorPic(false)
-            }
+                launchRequestWithLoading({
+                    WxArticleRepository().login(
+                        "FastJetpack",
+                        "FastJetpack"
+                    )
+                }).launchAndCollectIn(viewLifecycleOwner) {
 
+                }
+            }
             btLogin.setOnClickListener {
                 login()
             }
@@ -78,25 +82,15 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
      * 屏幕旋转，Activity销毁重建，数据会消失
      */
     private fun login() {
-//        launchWithLoadingAndCollect({
-//            mViewModel.login("FastJetpack", "FastJetpack")
+//        launchRequestWithLoadingOnIO({
+//            WxArticleRepository().login(
+//                "FastJetpack",
+//                "FastJetpack"
+//            )
 //        }) {
-//            onSuccess = {
-//                mBinding?.tvContent?.text = it.toString()
-//            }
-//            onFailed = { errorCode, errorMsg ->
-////                Log.i("errorCode: $errorCode   errorMsg: $errorMsg")
-//            }
+//            onSuccess = { LogUtils.e(it); }
 //        }
-
-        launchRequestWithLoadingOnIO({
-            WxArticleRepository().login(
-                "FastJetpack",
-                "FastJetpack"
-            )
-        }) {
-            onSuccess = { LogUtils.e(it); }
-        }
+        loginAsLiveData()
     }
 
     /**
@@ -104,7 +98,7 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
      */
     private fun loginAsLiveData() {
         val loginLiveData =
-            launchRequest(requestBlock = {
+            launchRequestWithLoading(requestBlock = {
                 mViewModel.login(
                     "FastJetpack",
                     "FastJetpack11"

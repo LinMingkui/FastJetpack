@@ -10,16 +10,6 @@ import com.aisier.databinding.FragmentMainBinding
 
 class MainFragment : BaseBindingFragment<FragmentMainBinding>(R.layout.fragment_main) {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        view.findViewById<Button>(R.id.bt_api).setOnClickListener {
-            view.findNavController().navigate(R.id.netListFragment)
-        }
-        view.findViewById<Button>(R.id.bt_save_state).setOnClickListener {
-            view.findNavController().navigate(R.id.savedStateFragment)
-        }
-    }
-
     override fun init(savedInstanceState: Bundle?) {
         mBinding?.apply {
             btApi.setOnClickListener {

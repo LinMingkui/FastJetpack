@@ -2,14 +2,13 @@ package com.aisier.vm
 
 import androidx.lifecycle.MutableLiveData
 import com.aisier.architecture.base.BaseViewModel
+import com.aisier.architecture.net.entity.ApiResponse
+import com.aisier.architecture.net.launchRequestOnIO
+import com.aisier.architecture.net.launchRequestWithLoadingOnIO
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
 import com.aisier.net.WxArticleRepository
-import com.aisier.architecture.net.entity.ApiResponse
-import com.aisier.architecture.net.launchRequestOnIO
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * <pre>
@@ -24,26 +23,10 @@ class ApiViewModel : BaseViewModel() {
     private val repository by lazy { WxArticleRepository() }
 
     val articleLiveData: MutableLiveData<ApiResponse<List<WxArticleBean>>> = MutableLiveData()
-    // 使用StateFlow 替代livedata
-//    val wxArticleLiveData = StateMutableLiveData<List<WxArticleBean>>()
 
     private val _uiState = MutableStateFlow<ApiResponse<List<WxArticleBean>>>(ApiResponse())
-    val uiState: StateFlow<ApiResponse<List<WxArticleBean>>> = _uiState.asStateFlow()
-
-    //    suspend fun requestNet() {
-//        _uiState.value = repository.fetchWxArticleFromNet()
-//        launchRequestWithLoading { repository.fetchWxArticleFromNet() }.collect {
-//            articleLiveData.value = it
-//        }
-//    }
-    fun requestNet() {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            launchRequestWithLoading { repository.fetchWxArticleFromNet() }.collect {
-//                articleLiveData.postValue(it)
-//            }
-//        }
-//        launchRequestWithLoadingOnIO(articleLiveData) { repository.fetchWxArticleFromNet() }
-        launchRequestOnIO(articleLiveData, requestBlock = { repository.fetchWxArticleFromNet() })
+    fun fetchWxArticleFromNet() {
+        launchRequestWithLoadingOnIO(articleLiveData, { repository.fetchWxArticleFromNet() })
     }
 
     suspend fun requestNetError() {

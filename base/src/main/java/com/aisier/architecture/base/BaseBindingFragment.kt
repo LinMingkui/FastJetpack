@@ -45,7 +45,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
             inflater, layoutResId,
             container, false, getDataBindingComponent()
         )
-        binding.lifecycleOwner = this
+        binding.lifecycleOwner = viewLifecycleOwner
 
         if (dataBindingArguments != null) {
             for ((k, v) in dataBindingArguments.map) {

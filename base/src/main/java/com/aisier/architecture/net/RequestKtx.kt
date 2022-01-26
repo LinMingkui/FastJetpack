@@ -8,10 +8,13 @@ import com.aisier.architecture.base.ViewEffect
 import com.aisier.architecture.net.entity.ApiCompleteResponse
 import com.aisier.architecture.net.entity.ApiResponse
 import com.aisier.architecture.net.entity.ApiStartResponse
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
+/**
+ * 发起请求
+ * 直接返回数据
+ */
 fun <T> launchRequest(
     requestBlock: suspend () -> ApiResponse<T>,
     startCallback: (() -> Unit)? = null,
@@ -21,13 +24,33 @@ fun <T> launchRequest(
         emit(requestBlock())
     }.onStart {
         startCallback?.invoke()
-//        emit(ApiStartResponse())
+        emit(ApiStartResponse())
     }.onCompletion {
         completeCallback?.invoke()
-//        emit(ApiCompleteResponse())
+        emit(ApiCompleteResponse())
     }
 }
 
+/**
+ * 发起带loading的请求
+ * 直接返回数据
+ */
+fun <T> BaseViewModel.launchRequestWithLoading(
+    requestBlock: suspend () -> ApiResponse<T>,
+    msg: String = "Loading...",
+    cancelable: Boolean = true
+): Flow<ApiResponse<T>> {
+    return launchRequest(
+        { requestBlock.invoke() },
+        { viewEffectLiveData.postValue(ViewEffect.ShowLoading(msg, cancelable)) },
+        { viewEffectLiveData.postValue(ViewEffect.HideLoading) }
+    )
+}
+
+/**
+ * 在IO线程发起请求
+ * resultLiveData接收数据
+ */
 fun <T> BaseViewModel.launchRequestOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
     requestBlock: suspend () -> ApiResponse<T>,
@@ -42,18 +65,28 @@ fun <T> BaseViewModel.launchRequestOnIO(
     }
 }
 
-fun <T> BaseViewModel.launchRequestWithLoading(
+/**
+ * 在IO线程发起请求
+ * listenerBuilder接收数据
+ */
+fun <T> BaseViewModel.launchRequestOnIO(
     requestBlock: suspend () -> ApiResponse<T>,
-    msg: String = "Loading...",
-    cancelable: Boolean = true
-): Flow<ApiResponse<T>> {
-    return launchRequest(
-        { requestBlock.invoke() },
-        { viewEffectLiveData.postValue(ViewEffect.ShowLoading(msg, cancelable)) },
-        { viewEffectLiveData.postValue(ViewEffect.HideLoading) }
-    )
+    startCallback: (() -> Unit)? = null,
+    completeCallback: (() -> Unit)? = null,
+    listenerBuilder: ResultBuilder<T>.() -> Unit
+) {
+    viewModelScope.launch {
+        launchRequest(requestBlock, startCallback, completeCallback)
+            .collect {
+                it.parseData(listenerBuilder)
+            }
+    }
 }
 
+/**
+ * 在IO线程发起带loading的请求
+ * resultLiveData接收数据
+ */
 fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
     requestBlock: suspend () -> ApiResponse<T>,
@@ -68,7 +101,29 @@ fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
     )
 }
 
+/**
+ * 在IO线程发起带loading的请求
+ * listenerBuilder接收数据
+ */
+fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
+    requestBlock: suspend () -> ApiResponse<T>,
+    msg: String = "Loading...",
+    cancelable: Boolean = true,
+    listenerBuilder: ResultBuilder<T>.() -> Unit
+) {
+    launchRequestOnIO(
+        requestBlock,
+        { viewEffectLiveData.postValue(ViewEffect.ShowLoading(msg, cancelable)) },
+        { viewEffectLiveData.postValue(ViewEffect.HideLoading) },
+        listenerBuilder
+    )
+}
 
+
+/**
+ * 发起带loading的请求
+ * 直接返回数据
+ */
 fun <T> IUiView.launchRequestWithLoading(
     requestBlock: suspend () -> ApiResponse<T>,
     msg: String = "Loading...",
@@ -81,6 +136,10 @@ fun <T> IUiView.launchRequestWithLoading(
     )
 }
 
+/**
+ * 在IO线程发起请求
+ * resultLiveData接收数据
+ */
 fun <T> IUiView.launchRequestOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
     requestBlock: suspend () -> ApiResponse<T>,
@@ -95,6 +154,10 @@ fun <T> IUiView.launchRequestOnIO(
     }
 }
 
+/**
+ * 在IO线程发起请求
+ * listenerBuilder接收数据
+ */
 fun <T> IUiView.launchRequestOnIO(
     requestBlock: suspend () -> ApiResponse<T>,
     startCallback: (() -> Unit)? = null,
@@ -109,6 +172,10 @@ fun <T> IUiView.launchRequestOnIO(
     }
 }
 
+/**
+ * 在IO线程发起带loading的请求
+ * resultLiveData接收数据
+ */
 fun <T> IUiView.launchRequestWithLoadingOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
     requestBlock: suspend () -> ApiResponse<T>,
@@ -123,6 +190,10 @@ fun <T> IUiView.launchRequestWithLoadingOnIO(
     )
 }
 
+/**
+ * 在IO线程发起带loading的请求
+ * listenerBuilder接收数据
+ */
 fun <T> IUiView.launchRequestWithLoadingOnIO(
     requestBlock: suspend () -> ApiResponse<T>,
     msg: String = "Loading...",
@@ -135,50 +206,6 @@ fun <T> IUiView.launchRequestWithLoadingOnIO(
         { dismissLoading() },
         listenerBuilder
     )
-}
-
-
-/**
- * 这个方法只是简单的一个封装Loading的普通方法，不返回任何实体类
- */
-fun IUiView.launchWithLoading(requestBlock: suspend () -> Unit) {
-    lifecycleScope.launch {
-        flow {
-            emit(requestBlock())
-        }.onStart {
-            showLoading()
-        }.onCompletion {
-            dismissLoading()
-        }.collect()
-    }
-}
-
-/**
- * 请求不带Loading&&不需要声明LiveData
- */
-fun <T> IUiView.launchAndCollect(
-    requestBlock: suspend () -> ApiResponse<T>,
-    listenerBuilder: ResultBuilder<T>.() -> Unit
-) {
-    lifecycleScope.launch {
-        launchRequest(requestBlock).collect { response ->
-            response.parseData(listenerBuilder)
-        }
-    }
-}
-
-/**
- * 请求带Loading&&不需要声明LiveData
- */
-fun <T> IUiView.launchWithLoadingAndCollect(
-    requestBlock: suspend () -> ApiResponse<T>,
-    listenerBuilder: ResultBuilder<T>.() -> Unit
-) {
-    lifecycleScope.launch {
-        launchRequest(requestBlock, { showLoading() }, { dismissLoading() }).collect { response ->
-            response.parseData(listenerBuilder)
-        }
-    }
 }
 
 fun <T> Flow<ApiResponse<T>>.launchAndCollectIn(
