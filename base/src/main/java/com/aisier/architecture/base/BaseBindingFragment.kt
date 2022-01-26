@@ -17,12 +17,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.aisier.architecture.util.singleToast
 import com.aisier.architecture.util.toast
 
-/**
- * author : wutao
- * time   : 2020/10/14
- * desc   :
- * version: 1.1
- */
 abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutResId: Int) :
     Fragment(), IUiView {
 
@@ -46,7 +40,6 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
             container, false, getDataBindingComponent()
         )
         binding.lifecycleOwner = viewLifecycleOwner
-
         if (dataBindingArguments != null) {
             for ((k, v) in dataBindingArguments.map) {
                 binding.setVariable(k, v)
@@ -114,13 +107,17 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mActivity = null
+    override fun onDestroyView() {
+        super.onDestroyView()
         mBinding = mBinding?.let {
             it.unbind()
             null
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mActivity = null
     }
 
     private var progressDialog: ProgressDialog? = null

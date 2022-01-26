@@ -1,17 +1,5 @@
 package com.aisier.architecture.util
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import android.graphics.drawable.GradientDrawable
-import android.os.Bundle
-import android.view.View
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import androidx.annotation.StringRes
-import com.aisier.architecture.base.BaseApp
-import java.util.*
-
 /**
  * <pre>
  *     @author : wutao
@@ -20,7 +8,7 @@ import java.util.*
  *     version: 1.0
  * </pre>
  */
-
+/*
 inline fun <reified T : Activity> Activity.startActivity(bundle: Bundle? = null) {
     val intent = Intent(this, T::class.java)
     if (bundle != null) {
@@ -29,17 +17,10 @@ inline fun <reified T : Activity> Activity.startActivity(bundle: Bundle? = null)
     startActivity(intent)
 }
 
-fun stringOf(@StringRes id: Int, vararg formatArgs: Any): String = getString(id, *formatArgs)
-
-fun stringOf(@StringRes id: Int): String = getString(id)
-
 fun EditText.getNotNullText(): String = text?.toString()?.trim() ?: ""
 
 fun EditText.getNotNullUpperCaseText(): String = getNotNullText().toUpperCase(Locale.ENGLISH)
 
-fun getString(@StringRes id: Int, vararg formatArgs: Any?): String {
-    return BaseApp.instance.resources.getString(id, *formatArgs)
-}
 
 //may only available on real device
 fun EditText.openKeyBoard() {
@@ -76,3 +57,4 @@ fun View.setRoundRectBg(color: Int, cornerRadius: Int) {
         setCornerRadius(cornerRadius.toFloat())
     }
 }
+*/
