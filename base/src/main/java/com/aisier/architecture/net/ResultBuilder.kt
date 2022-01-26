@@ -1,7 +1,8 @@
 package com.aisier.architecture.net
 
 import com.aisier.architecture.net.entity.*
-import com.aisier.architecture.util.ToastUtil
+import com.aisier.architecture.util.singleToast
+import com.apkfuns.logutils.LogUtils
 
 fun <T> ApiResponse<T>.parseData(listenerBuilder: ResultBuilder<T>.() -> Unit) {
     val listener = ResultBuilder<T>().also(listenerBuilder)
@@ -19,10 +20,13 @@ class ResultBuilder<T> {
     var onSuccess: (data: T?) -> Unit = {}
     var onDataEmpty: () -> Unit = {}
     var onFailed: (errorCode: Int?, errorMsg: String?) -> Unit = { _, errorMsg ->
-        errorMsg?.let { ToastUtil.showSingleToast(it) }
+        errorMsg?.let { singleToast(it) }
     }
     var onError: (e: Throwable) -> Unit = { e ->
-        e.message?.let { ToastUtil.showSingleToast(it) }
+        e.message?.let {
+            LogUtils.e("onError $it")
+            singleToast(it)
+        }
     }
     var onComplete: () -> Unit = {}
     var onStart: () -> Unit = {}

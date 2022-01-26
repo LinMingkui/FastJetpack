@@ -1,24 +1,20 @@
 package com.aisier.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.asLiveData
 import com.aisier.R
 import com.aisier.architecture.base.BaseBindingFragment
-import com.aisier.architecture.base.ViewEffect
+import com.aisier.architecture.net.launchRequest
+import com.aisier.architecture.net.launchRequestWithLoadingOnIO
+import com.aisier.architecture.net.launchWithLoadingAndCollect
 import com.aisier.architecture.net.observeResult
-import com.aisier.architecture.util.launchAndCollectIn
-import com.aisier.architecture.util.launchFlow
-import com.aisier.architecture.util.launchWithLoading
-import com.aisier.architecture.util.launchWithLoadingAndCollect
-import com.aisier.bean.WxArticleBean
 import com.aisier.databinding.FragmentNetListBinding
+import com.aisier.net.WxArticleRepository
 import com.aisier.vm.ApiViewModel
+import com.apkfuns.logutils.LogUtils
 
 /**
  * dev 分支去掉LiveData，使用Flow
@@ -31,55 +27,23 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
 
     override fun init(savedInstanceState: Bundle?) {
         initData()
-        initObserver()
-        mViewModel.viewEffectLiveData.observe(viewLifecycleOwner) {
-            when (it) {
-                is ViewEffect.ShowLoading -> {
-                    Log.e(TAG, "Show Loading")
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
-                }
-                is ViewEffect.HideLoading -> {
-                    Log.e(TAG, "Hide Loading")
-                    Toast.makeText(context, "Hide Loading", Toast.LENGTH_SHORT).show()
-                }
-                is ViewEffect.ShowToast -> {
-                    Toast.makeText(context, it.message, it.length).show()
-                }
-            }
-        }
         mViewModel.articleLiveData.observeResult(viewLifecycleOwner) {
             onSuccess = {
                 mBinding?.tvContent?.text = it.toString()
-                Log.e(TAG, "Success")
-                Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
+                LogUtils.e("Success")
             }
             onFailed = { c, m ->
-                Log.e(TAG, "onFailed code=$c,msg=$m")
+                LogUtils.e("onFailed code=$c,msg=$m")
             }
-//            onError = {
-//                Log.e(TAG, "onError $it")
-//            }
+            onError = {
+                LogUtils.e("onError $it")
+            }
             onStart = {
-                Log.e(TAG, "onStart")
+                LogUtils.e("onStart")
             }
             onComplete = {
-                Log.e(TAG, "onComplete")
+                LogUtils.e("onComplete")
             }
-        }
-    }
-
-    private fun initObserver() {
-        mViewModel.uiState.launchAndCollectIn(this, Lifecycle.State.STARTED) {
-            onSuccess = { result: List<WxArticleBean>? ->
-                showNetErrorPic(false)
-                mBinding?.tvContent?.text = result.toString()
-            }
-
-            onComplete = { Log.i("NetListFragment", ": onComplete") }
-
-            onFailed = { code, msg -> Log.i("tag", "errorCode: $code   errorMsg: $msg") }
-
-            onError = { showNetErrorPic(true) }
         }
     }
 
@@ -99,20 +63,14 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
 
             btnNetError.setOnClickListener {
                 showNetErrorPic(false)
-                requestNetError()
             }
 
             btLogin.setOnClickListener {
-                showNetErrorPic(false)
                 login()
             }
         }
 
     }
-
-    private fun requestNet() = launchWithLoading(mViewModel::requestNet)
-
-    private fun requestNetError() = launchWithLoading(mViewModel::requestNetError)
 
     /**
      * 链式调用，返回结果的处理都在一起，viewmodel中不需要创建一个livedata对象
@@ -120,15 +78,24 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
      * 屏幕旋转，Activity销毁重建，数据会消失
      */
     private fun login() {
-        launchWithLoadingAndCollect({
-            mViewModel.login("FastJetpack", "FastJetpack")
+//        launchWithLoadingAndCollect({
+//            mViewModel.login("FastJetpack", "FastJetpack")
+//        }) {
+//            onSuccess = {
+//                mBinding?.tvContent?.text = it.toString()
+//            }
+//            onFailed = { errorCode, errorMsg ->
+////                Log.i("errorCode: $errorCode   errorMsg: $errorMsg")
+//            }
+//        }
+
+        launchRequestWithLoadingOnIO({
+            WxArticleRepository().login(
+                "FastJetpack",
+                "FastJetpack"
+            )
         }) {
-            onSuccess = {
-                mBinding?.tvContent?.text = it.toString()
-            }
-            onFailed = { errorCode, errorMsg ->
-//                Log.i("errorCode: $errorCode   errorMsg: $errorMsg")
-            }
+            onSuccess = { LogUtils.e(it); }
         }
     }
 
@@ -137,7 +104,7 @@ class NetListFragment : BaseBindingFragment<FragmentNetListBinding>(R.layout.fra
      */
     private fun loginAsLiveData() {
         val loginLiveData =
-            launchFlow(requestBlock = {
+            launchRequest(requestBlock = {
                 mViewModel.login(
                     "FastJetpack",
                     "FastJetpack11"

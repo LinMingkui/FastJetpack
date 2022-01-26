@@ -3,13 +3,11 @@ package com.aisier.architecture.util
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import androidx.annotation.StringRes
 import com.aisier.architecture.base.BaseApp
 import java.util.*
@@ -43,10 +41,6 @@ fun getString(@StringRes id: Int, vararg formatArgs: Any?): String {
     return BaseApp.instance.resources.getString(id, *formatArgs)
 }
 
-fun toast(message: CharSequence, duration: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(BaseApp.instance, message, duration).show()
-}
-
 //may only available on real device
 fun EditText.openKeyBoard() {
     val imm = this.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -71,6 +65,7 @@ fun View.clickWithLimit(intervalMill: Int = 500, block: ((v: View?) -> Unit)) {
         }
     })
 }
+
 
 /**
  * 自定义圆角矩形

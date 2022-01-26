@@ -8,6 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aisier.architecture.util.singleToast
+import com.aisier.architecture.util.toast
 
 /**
  * <pre>
@@ -19,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider
  */
 abstract class BaseBindingActivity<B : ViewDataBinding>(@LayoutRes val layoutResId: Int) :
     AppCompatActivity(), IUiView {
+    val TAG = javaClass.simpleName
     var mActivity: BaseBindingActivity<B>? = null
     var mBinding: B? = null
 
@@ -48,23 +51,58 @@ abstract class BaseBindingActivity<B : ViewDataBinding>(@LayoutRes val layoutRes
     }
 
     fun <T : ViewModel> getViewModel(clazz: Class<T>): T {
-        return ViewModelProvider(this)[clazz]
+        val model = ViewModelProvider(this)[clazz]
+        if (model is BaseViewModel) {
+            initViewEffect(model)
+        }
+        return model
+    }
+
+    private fun initViewEffect(model: BaseViewModel) {
+        model.viewEffectLiveData.observe(this) {
+            when (it) {
+                is ViewEffect.ShowLoading -> {
+                    showLoading(it.msg, it.cancelable)
+                }
+                is ViewEffect.HideLoading -> {
+                    dismissLoading()
+                }
+                is ViewEffect.ShowToast -> {
+                    if (!it.msg.isNullOrBlank()) {
+                        toast(it.msg, it.duration)
+                    } else if (it.msgResId != 0) {
+                        toast(it.msgResId, it.duration)
+                    }
+                }
+                is ViewEffect.ShowSingleToast -> {
+                    if (!it.msg.isNullOrBlank()) {
+                        singleToast(it.msg, it.duration)
+                    } else if (it.msgResId != 0) {
+                        singleToast(it.msgResId, it.duration)
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mActivity = null
-        mBinding?.apply {
-            unbind()
-            mBinding = null
+        mBinding = mBinding?.let {
+            it.unbind()
+            null
         }
     }
 
     private var progressDialog: ProgressDialog? = null
 
-    override fun showLoading() {
+    override fun showLoading(msg: String?, cancelable: Boolean) {
         if (progressDialog == null)
             progressDialog = ProgressDialog(this)
+        msg?.let {
+            progressDialog?.setMessage(msg)
+        }
+        progressDialog?.setCancelable(cancelable)
         progressDialog?.show()
     }
 

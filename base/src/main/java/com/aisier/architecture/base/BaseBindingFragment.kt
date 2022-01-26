@@ -3,11 +3,9 @@ package com.aisier.architecture.base
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingComponent
@@ -16,6 +14,8 @@ import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aisier.architecture.util.singleToast
+import com.aisier.architecture.util.toast
 
 /**
  * author : wutao
@@ -80,7 +80,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
     }
 
     fun <T : ViewModel> getActivityViewModel(clazz: Class<T>): T {
-        val model = ViewModelProvider(activity!!)[clazz]
+        val model = ViewModelProvider(requireActivity())[clazz]
         if (model is BaseViewModel) {
             initViewEffect(model)
         }
@@ -91,25 +91,48 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
         model.viewEffectLiveData.observe(viewLifecycleOwner) {
             when (it) {
                 is ViewEffect.ShowLoading -> {
-                    Log.e(TAG, "Show Loading")
-                    Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show()
+                    showLoading(it.msg, it.cancelable)
                 }
                 is ViewEffect.HideLoading -> {
-                    Log.e(TAG, "Hide Loading")
-                    Toast.makeText(context, "Hide Loading", Toast.LENGTH_SHORT).show()
+                    dismissLoading()
                 }
                 is ViewEffect.ShowToast -> {
-                    Toast.makeText(context, it.message, it.length).show()
+                    if (!it.msg.isNullOrBlank()) {
+                        toast(it.msg, it.duration)
+                    } else if (it.msgResId != 0) {
+                        toast(it.msgResId, it.duration)
+                    }
+                }
+                is ViewEffect.ShowSingleToast -> {
+                    if (!it.msg.isNullOrBlank()) {
+                        singleToast(it.msg, it.duration)
+                    } else if (it.msgResId != 0) {
+                        singleToast(it.msgResId, it.duration)
+                    }
                 }
             }
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mActivity = null
+        mBinding = mBinding?.let {
+            it.unbind()
+            null
+        }
+    }
+
     private var progressDialog: ProgressDialog? = null
 
-    override fun showLoading() {
+    override fun showLoading(msg: String?, cancelable: Boolean) {
+        if (mActivity == null) return
         if (progressDialog == null)
-            progressDialog = ProgressDialog(requireActivity())
+            progressDialog = ProgressDialog(mActivity)
+        msg?.let {
+            progressDialog?.setMessage(msg)
+        }
+        progressDialog?.setCancelable(cancelable)
         progressDialog?.show()
     }
 

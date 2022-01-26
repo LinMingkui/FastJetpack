@@ -6,6 +6,7 @@ import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
 import com.aisier.net.WxArticleRepository
 import com.aisier.architecture.net.entity.ApiResponse
+import com.aisier.architecture.net.launchRequestOnIO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

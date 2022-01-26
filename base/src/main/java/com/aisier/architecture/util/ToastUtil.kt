@@ -2,85 +2,87 @@ package com.aisier.architecture.util
 
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
 import android.widget.Toast
 import com.aisier.architecture.base.BaseApp
 
-class ToastUtil {
+private val handler = Handler(Looper.getMainLooper())
+private val SINGLE_TOAST_LOCK = Any()
+private var singleToast: Toast? = null
 
-    companion object {
-        private val handler = Handler(Looper.getMainLooper())
-        private val SINGLE_TOAST_LOCK = Any()
-        private var singleToast: Toast? = null
+fun toast(text: String?) {
+    toast(text, Toast.LENGTH_SHORT)
+}
 
-        fun showToast(text: String) {
-            showCommonToast(text, Toast.LENGTH_SHORT)
-        }
+fun toast(stringRes: Int) {
+    toast(stringRes, Toast.LENGTH_SHORT)
+}
 
-        fun showLongToast(text: String) {
-            showCommonToast(text, Toast.LENGTH_LONG)
-        }
+fun longToast(text: String?) {
+    toast(text, Toast.LENGTH_LONG)
+}
 
-        fun showToast(stringRes: Int) {
-            showCommonToast(BaseApp.instance.getString(stringRes), Toast.LENGTH_SHORT)
-        }
+fun longToast(stringRes: Int) {
+    toast(stringRes, Toast.LENGTH_LONG)
+}
 
-        fun showLongToast(stringRes: Int) {
-            showCommonToast(BaseApp.instance.getString(stringRes), Toast.LENGTH_LONG)
-        }
+fun toast(stringRes: Int, duration: Int) {
+    toast(BaseApp.instance.getString(stringRes), duration)
+}
 
-
-        fun showSingleToast(text: String?) {
-            showSingleToast(text, Toast.LENGTH_SHORT)
-        }
-
-        fun showSingleLongToast(text: String?) {
-            showSingleToast(text, Toast.LENGTH_LONG)
-        }
-
-        fun showSingleToast(stringRes: Int) {
-            showSingleToast(BaseApp.instance.getString(stringRes), Toast.LENGTH_SHORT)
-        }
-
-        fun showSingleLongToast(stringRes: Int) {
-            showSingleToast(BaseApp.instance.getString(stringRes), Toast.LENGTH_LONG)
-        }
-
-        fun showCommonToast(text: String, duration: Int) {
-            if (!TextUtils.isEmpty(text)) {
-                if (Looper.myLooper() == Looper.getMainLooper()) {
-                    Toast.makeText(BaseApp.instance, text, duration).show()
-                } else {
-                    handler.post {
-                        Toast.makeText(BaseApp.instance, text, duration).show()
-                    }
-                }
+fun toast(text: String?, duration: Int) {
+    if (!text.isNullOrBlank()) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            Toast.makeText(BaseApp.instance, text, duration).show()
+        } else {
+            handler.post {
+                Toast.makeText(BaseApp.instance, text, duration).show()
             }
         }
+    }
+}
 
-        /**
-         * 避免一下显示很多
-         *
-         * @param text
-         * @param duration
-         * @return
-         */
-        fun showSingleToast(text: String?, duration: Int) {
-            if (!TextUtils.isEmpty(text)) {
-                synchronized(SINGLE_TOAST_LOCK) {
-                    singleToast?.apply {
-                        cancel()
-                        singleToast = null
-                    }
-                    if (Looper.myLooper() == Looper.getMainLooper()) {
-                        singleToast = Toast.makeText(BaseApp.instance, text, duration)
-                        singleToast?.show()
-                    } else {
-                        handler.post {
-                            singleToast = Toast.makeText(BaseApp.instance, text, duration)
-                            singleToast?.show()
-                        }
-                    }
+
+fun singleToast(text: String?) {
+    singleToast(text, Toast.LENGTH_SHORT)
+}
+
+fun singleLongToast(text: String?) {
+    singleToast(text, Toast.LENGTH_LONG)
+}
+
+fun singleToast(stringRes: Int) {
+    singleToast(stringRes, Toast.LENGTH_SHORT)
+}
+
+fun singleLongToast(stringRes: Int) {
+    singleToast(stringRes, Toast.LENGTH_LONG)
+}
+
+fun singleToast(stringRes: Int, duration: Int) {
+    singleToast(BaseApp.instance.getString(stringRes), duration)
+}
+
+/**
+ * 避免一下显示很多
+ *
+ * @param text
+ * @param duration
+ * @return
+ */
+fun singleToast(text: String?, duration: Int) {
+    if (!text.isNullOrBlank()) {
+        synchronized(SINGLE_TOAST_LOCK) {
+            singleToast = singleToast?.let {
+                it.cancel()
+                null
+            }
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                singleToast = Toast.makeText(BaseApp.instance, text, duration)
+                singleToast?.show()
+            } else {
+                handler.post {
+                    singleToast = Toast.makeText(BaseApp.instance, text, duration)
+                    singleToast?.show()
                 }
             }
         }
