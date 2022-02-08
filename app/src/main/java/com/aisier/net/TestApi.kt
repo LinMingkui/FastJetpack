@@ -1,14 +1,14 @@
 package com.aisier.net
 
+import com.aisier.architecture.net.entity.ApiResponse
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
-import com.aisier.architecture.net.entity.ApiResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface ApiService {
+interface TestApi {
 
     @GET("wxarticle/chapters/json")
     suspend fun getWxArticle(): ApiResponse<List<WxArticleBean>>
@@ -18,7 +18,10 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("user/login")
-    suspend fun login(@Field("username") userName: String, @Field("password") passWord: String): ApiResponse<User?>
+    suspend fun login(
+        @Field("username") userName: String,
+        @Field("password") passWord: String
+    ): ApiResponse<User?>
 
     companion object {
         const val BASE_URL = "https://wanandroid.com/"

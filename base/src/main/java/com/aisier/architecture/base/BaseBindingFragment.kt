@@ -22,7 +22,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
 
     val TAG = javaClass.simpleName
     var mActivity: AppCompatActivity? = null
-    var mBinding: B? = null
+    lateinit var mBinding: B
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -109,10 +109,7 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mBinding = mBinding?.let {
-            it.unbind()
-            null
-        }
+        mBinding.unbind()
     }
 
     override fun onDestroy() {

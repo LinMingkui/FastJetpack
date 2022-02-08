@@ -11,14 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.aisier.architecture.util.singleToast
 import com.aisier.architecture.util.toast
 
-/**
- * <pre>
- * author : wutao
- * time   : 2021/6/18
- * desc   : 去掉类上面的泛型，因为反射会影响性能。并且优先选择组合而不是继承。
- * version: 1.3
-</pre> *
- */
 abstract class BaseBindingActivity<B : ViewDataBinding>(@LayoutRes val layoutResId: Int) :
     AppCompatActivity(), IUiView {
     val TAG = javaClass.simpleName

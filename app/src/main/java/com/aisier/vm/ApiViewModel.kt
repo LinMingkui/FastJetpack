@@ -1,8 +1,9 @@
 package com.aisier.vm
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.aisier.architecture.base.BaseViewModel
 import com.aisier.architecture.net.entity.ApiResponse
 import com.aisier.architecture.net.launchRequestWithLoading
@@ -11,9 +12,12 @@ import com.aisier.architecture.net.parseData
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
 import com.aisier.net.WxArticleRepository
+import com.aisier.page.RecommendUserSource
+import com.aisier.ui.RecommendAdapter
 import com.apkfuns.logutils.LogUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -25,6 +29,8 @@ import kotlinx.coroutines.launch
 </pre> *
  */
 class ApiViewModel : BaseViewModel() {
+
+    private val adapter = RecommendAdapter()
 
     private val repository by lazy { WxArticleRepository() }
 
@@ -50,5 +56,18 @@ class ApiViewModel : BaseViewModel() {
      */
     suspend fun login(username: String, password: String): ApiResponse<User?> {
         return repository.login(username, password)
+    }
+
+    fun getRecommendUser() {
+        viewModelScope.launch {
+            Pager(
+                PagingConfig(20),
+                1,
+            ) {
+                RecommendUserSource()
+            }.flow.collectLatest {
+                adapter.submitData(it)
+            }
+        }
     }
 }
