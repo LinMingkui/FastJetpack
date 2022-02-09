@@ -1,11 +1,13 @@
 package com.aisier.net
 
-import com.aisier.bean.User
-import com.aisier.bean.WxArticleBean
 import com.aisier.architecture.net.base.BaseRepository
 import com.aisier.architecture.net.entity.ApiResponse
+import com.aisier.bean.Article
+import com.aisier.bean.Page
+import com.aisier.bean.User
+import com.aisier.bean.WxArticleBean
 
-class WxArticleRepository : BaseRepository() {
+object WanRepository : BaseRepository() {
 
     private val mService by lazy {
         RetrofitClient.service
@@ -32,6 +34,12 @@ class WxArticleRepository : BaseRepository() {
     suspend fun login(username: String, password: String): ApiResponse<User?> {
         return executeHttp {
             mService.login(username, password)
+        }
+    }
+
+    suspend fun getArticleList(page: Int): ApiResponse<Page<Article>> {
+        return executeHttp {
+            mService.getArticleList(page)
         }
     }
 

@@ -11,7 +11,7 @@ import com.aisier.architecture.net.launchRequestWithLoading
 import com.aisier.architecture.net.launchRequestWithLoadingOnIO
 import com.aisier.architecture.net.observeResult
 import com.aisier.databinding.FragmentMineBinding
-import com.aisier.net.WxArticleRepository
+import com.aisier.net.WanRepository
 import com.aisier.vm.ApiViewModel
 import com.apkfuns.logutils.LogUtils
 
@@ -58,7 +58,7 @@ class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_
             btnNet.setOnClickListener {
 //                mViewModel.fetchWxArticleFromNet()
 
-                launchRequestWithLoading({ WxArticleRepository().fetchWxArticleFromNet() })
+                launchRequestWithLoading({ WanRepository.fetchWxArticleFromNet() })
                     .asLiveData()
 //                    .observe(this@NetListFragment){
 //                        mViewModel.articleLiveData.value=it
@@ -66,7 +66,7 @@ class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_
                     .observeResult(this@MineFragment) {
                         onSuccess
                     }
-                launchRequestWithLoadingOnIO({ WxArticleRepository().fetchWxArticleFromNet() }) {
+                launchRequestWithLoadingOnIO({ WanRepository.fetchWxArticleFromNet() }) {
 
                 }
             }
@@ -74,7 +74,7 @@ class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_
             btnNetError.setOnClickListener {
                 showNetErrorPic(false)
                 launchRequestWithLoading({
-                    WxArticleRepository().login(
+                    WanRepository.login(
                         "FastJetpack",
                         "FastJetpack"
                     )

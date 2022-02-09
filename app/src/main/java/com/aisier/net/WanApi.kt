@@ -1,20 +1,22 @@
 package com.aisier.net
 
 import com.aisier.architecture.net.entity.ApiResponse
+import com.aisier.bean.Article
+import com.aisier.bean.Page
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import retrofit2.http.*
 
-interface TestApi {
+interface WanApi {
 
     @GET("wxarticle/chapters/json")
     suspend fun getWxArticle(): ApiResponse<List<WxArticleBean>>
 
     @GET("abc/chapters/json")
     suspend fun getWxArticleError(): ApiResponse<List<WxArticleBean>>
+
+    @GET("article/list/{page}/json")
+    suspend fun getArticleList(@Path("page") page: Int): ApiResponse<Page<Article>>
 
     @FormUrlEncoded
     @POST("user/login")

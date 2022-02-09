@@ -4,15 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.aisier.bean.RecommendUser
-import com.aisier.databinding.ItemRecommendUserBinding
+import com.aisier.bean.Article
+import com.aisier.databinding.ItemArticleBinding
 
 /**
  * @author 再战科技
  * @date 2022/2/8
  * @description
  */
-class RecommendAdapter() : PagingDataAdapter<RecommendUser, Holder>(RecommendUser.diffCallback) {
+class RecommendAdapter : PagingDataAdapter<Article, Holder>(Article.diffCallback) {
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
         holder.binding.bean = getItem(position)
@@ -20,7 +20,7 @@ class RecommendAdapter() : PagingDataAdapter<RecommendUser, Holder>(RecommendUse
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         return Holder(
-            ItemRecommendUserBinding.inflate(
+            ItemArticleBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -29,4 +29,4 @@ class RecommendAdapter() : PagingDataAdapter<RecommendUser, Holder>(RecommendUse
     }
 }
 
-class Holder(val binding: ItemRecommendUserBinding) : RecyclerView.ViewHolder(binding.root)
+class Holder(val binding: ItemArticleBinding) : RecyclerView.ViewHolder(binding.root)

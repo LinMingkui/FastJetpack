@@ -5,29 +5,29 @@ import androidx.paging.PagingState
 import com.aisier.architecture.net.entity.ApiEmptyResponse
 import com.aisier.architecture.net.entity.ApiSuccessResponse
 import com.aisier.architecture.net.parseData
-import com.aisier.bean.RecommendUser
-import com.aisier.net.MeetiRepository
+import com.aisier.bean.Article
+import com.aisier.net.WanRepository
 
 /**
  * @author 再战科技
  * @date 2022/2/8
  * @description
  */
-class RecommendUserSource : PagingSource<Int, RecommendUser>() {
+class ArticleSource : PagingSource<Int, Article>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, RecommendUser> {
-        val currPage = params.key ?: 1
-        val response = MeetiRepository.getRecommendUser(currPage, params.loadSize)
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
+        val currPage = params.key ?: 0
+        val response = WanRepository.getArticleList(currPage)
         when (response) {
             is ApiSuccessResponse -> {
                 return LoadResult.Page(
-                    response.data ?: listOf(),
-                    if (currPage == 1) {
+                    response.data?.datas ?: listOf(),
+                    if (currPage == 0) {
                         null
                     } else {
                         currPage - 1
                     },
-                    if (response.data?.size == params.loadSize) {
+                    if (response.data?.pageCount ?: Int.MAX_VALUE < currPage) {
                         currPage + 1
                     } else {
                         null
@@ -37,7 +37,7 @@ class RecommendUserSource : PagingSource<Int, RecommendUser>() {
             is ApiEmptyResponse -> {
                 return LoadResult.Page(
                     listOf(),
-                    if (currPage == 1) {
+                    if (currPage == 0) {
                         null
                     } else {
                         currPage - 1
@@ -53,7 +53,7 @@ class RecommendUserSource : PagingSource<Int, RecommendUser>() {
         )
     }
 
-    override fun getRefreshKey(state: PagingState<Int, RecommendUser>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
         return null
     }
 

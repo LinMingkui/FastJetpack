@@ -1,6 +1,8 @@
 package com.aisier.architecture.net.base
 
 import androidx.viewbinding.BuildConfig
+import com.google.gson.GsonBuilder
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -15,13 +17,13 @@ abstract class BaseRetrofitClient {
 
     private val client: OkHttpClient by lazy {
         val builder = OkHttpClient.Builder()
-                .addInterceptor(getHttpLoggingInterceptor())
-                .connectTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(getHttpLoggingInterceptor())
+            .connectTimeout(TIME_OUT.toLong(), TimeUnit.SECONDS)
         handleBuilder(builder)
         builder.build()
     }
 
-    private fun getHttpLoggingInterceptor(): HttpLoggingInterceptor {
+    open fun getHttpLoggingInterceptor(): Interceptor {
         val logging = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
             logging.level = HttpLoggingInterceptor.Level.BODY
@@ -31,14 +33,19 @@ abstract class BaseRetrofitClient {
         return logging
     }
 
-    abstract fun handleBuilder(builder: OkHttpClient.Builder)
+    open fun handleBuilder(builder: OkHttpClient.Builder) {
+
+    }
 
     open fun <Service> getService(serviceClass: Class<Service>, baseUrl: String): Service {
+        val gson = GsonBuilder()
+            .registerTypeAdapterFactory(CustomAdapterFactory())
+            .create()
         return Retrofit.Builder()
-                .client(client)
-                .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(baseUrl)
-                .build()
-                .create(serviceClass)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .baseUrl(baseUrl)
+            .build()
+            .create(serviceClass)
     }
 }
