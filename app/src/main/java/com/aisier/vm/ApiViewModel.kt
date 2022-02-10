@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
+import androidx.paging.cachedIn
 import com.aisier.architecture.base.BaseViewModel
 import com.aisier.architecture.net.entity.ApiResponse
 import com.aisier.architecture.net.launchRequestWithLoading
@@ -59,15 +60,22 @@ class ApiViewModel : BaseViewModel() {
     }
 
     fun getRecommendUser() {
+//        viewModelScope.launch {
+//            Pager(
+//                PagingConfig(20, initialLoadSize = 20, prefetchDistance = 5),
+//                0,
+//            ) {
+//                ArticleSource()
+//            }.flow.collectLatest {
+//                adapter.submitData(it)
+//            }
+//        }
         viewModelScope.launch {
-            Pager(
-                PagingConfig(20, initialLoadSize = 20, prefetchDistance = 5),
-                0,
-            ) {
-                ArticleSource()
-            }.flow.collectLatest {
-                adapter.submitData(it)
-            }
+            WanRepository.getArticleList(0)
+                .cachedIn(viewModelScope)
+                .collectLatest {
+                    adapter.submitData(it)
+                }
         }
     }
 }

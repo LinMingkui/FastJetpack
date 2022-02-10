@@ -3,9 +3,9 @@ package com.aisier.net
 import com.aisier.architecture.net.base.BaseRetrofitClient
 import okhttp3.OkHttpClient
 
-object MeetiClient : BaseRetrofitClient() {
+object GithubClient : BaseRetrofitClient() {
 
-    val service by lazy { getService(MeetiApi::class.java, MeetiApi.MEETI_URL) }
+    val service by lazy { getService(GithubApi::class.java, GithubApi.BASE_URL) }
 
     override fun handleBuilder(builder: OkHttpClient.Builder) = Unit
 

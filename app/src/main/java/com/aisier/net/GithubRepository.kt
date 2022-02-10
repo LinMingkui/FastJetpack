@@ -9,10 +9,10 @@ import com.aisier.bean.RecommendUser
  * @date 2022/2/8
  * @description
  */
-object MeetiRepository : BaseRepository() {
+object GithubRepository : BaseRepository() {
 
     private val service by lazy {
-        MeetiClient.service
+        GithubClient.service
     }
 
     suspend fun getRecommendUser(page: Int, pageSize: Int): ApiResponse<List<RecommendUser>> {

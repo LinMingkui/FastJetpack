@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName
  * @date 2022/2/9
  * @description
  */
-data class Page<T>(
+data class WanPage<T>(
     @SerializedName("curPage")
     val curPage: Int = 0,
     @SerializedName("offset")

@@ -46,5 +46,6 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation "androidx.paging:paging-runtime-ktx:3.1.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
 }

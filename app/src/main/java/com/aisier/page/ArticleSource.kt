@@ -2,11 +2,9 @@ package com.aisier.page
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.aisier.architecture.net.entity.ApiEmptyResponse
-import com.aisier.architecture.net.entity.ApiSuccessResponse
-import com.aisier.architecture.net.parseData
 import com.aisier.bean.Article
-import com.aisier.net.WanRepository
+import com.aisier.net.RetrofitClient
+import com.apkfuns.logutils.LogUtils
 
 /**
  * @author 再战科技
@@ -15,42 +13,90 @@ import com.aisier.net.WanRepository
  */
 class ArticleSource : PagingSource<Int, Article>() {
 
+//    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
+//        val currPage = params.key ?: 0
+//        val response = WanRepository.getArticleList(currPage)
+//        when (response) {
+//            is ApiSuccessResponse -> {
+//                return LoadResult.Page(
+//                    response.data?.datas ?: listOf(),
+//                    if (currPage == 0) {
+//                        null
+//                    } else {
+//                        currPage - 1
+//                    },
+//                    if (response.data?.pageCount ?: Int.MAX_VALUE < currPage) {
+//                        currPage + 1
+//                    } else {
+//                        null
+//                    }
+//                )
+//            }
+//            is ApiEmptyResponse -> {
+//                return LoadResult.Page(
+//                    listOf(),
+//                    if (currPage == 0) {
+//                        null
+//                    } else {
+//                        currPage - 1
+//                    },
+//                    null
+//                )
+//            }
+//
+//        }
+//        response.parseData {}
+//        return LoadResult.Error(
+//            response.error ?: Throwable(response.errorMsg ?: "Unknown Error")
+//        )
+//    }
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val currPage = params.key ?: 0
-        val response = WanRepository.getArticleList(currPage)
-        when (response) {
-            is ApiSuccessResponse -> {
-                return LoadResult.Page(
-                    response.data?.datas ?: listOf(),
-                    if (currPage == 0) {
-                        null
-                    } else {
-                        currPage - 1
-                    },
-                    if (response.data?.pageCount ?: Int.MAX_VALUE < currPage) {
-                        currPage + 1
-                    } else {
-                        null
-                    }
-                )
-            }
-            is ApiEmptyResponse -> {
-                return LoadResult.Page(
-                    listOf(),
-                    if (currPage == 0) {
-                        null
-                    } else {
-                        currPage - 1
-                    },
-                    null
-                )
-            }
-
+        return try {
+            val response = RetrofitClient.service.getArticleList(currPage)
+            LoadResult.Page(
+                response.data?.datas ?: listOf(),
+                if (currPage == 0) null else currPage - 1,
+                if (response.data?.pageCount ?: Int.MAX_VALUE < currPage) currPage + 1 else null
+            )
+        } catch (e: Throwable) {
+            LogUtils.e(e);
+            LoadResult.Error(e)
         }
-        response.parseData {}
-        return LoadResult.Error(
-            response.error ?: Throwable(response.errorMsg ?: "Unknown Error")
-        )
+//        when (response) {
+//            is ApiSuccessResponse -> {
+//                return LoadResult.Page(
+//                    response.data?.datas ?: listOf(),
+//                    if (currPage == 0) {
+//                        null
+//                    } else {
+//                        currPage - 1
+//                    },
+//                    if (response.data?.pageCount ?: Int.MAX_VALUE < currPage) {
+//                        currPage + 1
+//                    } else {
+//                        null
+//                    }
+//                )
+//            }
+//            is ApiEmptyResponse -> {
+//                return LoadResult.Page(
+//                    listOf(),
+//                    if (currPage == 0) {
+//                        null
+//                    } else {
+//                        currPage - 1
+//                    },
+//                    null
+//                )
+//            }
+//
+//        }
+//        response.parseData {}
+//        return LoadResult.Error(
+//            response.error ?: Throwable(response.errorMsg ?: "Unknown Error")
+//        )
     }
 
     override fun getRefreshKey(state: PagingState<Int, Article>): Int? {
