@@ -48,7 +48,7 @@ open class BaseRepository {
         return if (data == null || data is List<*> && (data as List<*>).isEmpty()) {
             ApiEmptyResponse()
         } else {
-            BaseApiSuccessResponse(data)
+            ApiSuccessResponse(data)
         }
     }
 

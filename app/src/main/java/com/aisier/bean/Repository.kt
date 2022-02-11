@@ -1,4 +1,6 @@
 package com.aisier.bean
+
+import androidx.recyclerview.widget.DiffUtil
 import com.google.gson.annotations.SerializedName
 
 
@@ -164,7 +166,23 @@ data class Repository(
     val watchers: Int = 0,
     @SerializedName("watchers_count")
     val watchersCount: Int = 0
-)
+) {
+
+    companion object {
+        val diffCallback = object : DiffUtil.ItemCallback<Repository>() {
+            override fun areItemsTheSame(oldItem: Repository, newItem: Repository): Boolean {
+                return oldItem.id == newItem.id
+            }
+
+            override fun areContentsTheSame(
+                oldItem: Repository,
+                newItem: Repository
+            ): Boolean {
+                return oldItem == newItem
+            }
+        }
+    }
+}
 
 data class License(
     @SerializedName("key")

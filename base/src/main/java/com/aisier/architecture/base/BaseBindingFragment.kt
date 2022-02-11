@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aisier.architecture.util.singleToast
 import com.aisier.architecture.util.toast
+import com.apkfuns.logutils.LogUtils
 
 abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutResId: Int) :
     Fragment(), IUiView {
@@ -24,8 +25,15 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
     var mActivity: AppCompatActivity? = null
     lateinit var mBinding: B
 
+    companion object {
+        const val TAG_LIFECYCLE = "FragmentLifecycle"
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        if (enablePrintLifecycle()) {
+            LogUtils.v("onAttach")
+        }
         mActivity = context as AppCompatActivity
     }
 
@@ -34,6 +42,9 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        if (enablePrintLifecycle()) {
+            LogUtils.v("onCreateView")
+        }
         val dataBindingArguments: DataBindingArguments? = getDataBindingArguments()
         val binding: B = DataBindingUtil.inflate(
             inflater, layoutResId,
@@ -46,11 +57,14 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
             }
         }
         mBinding = binding
-        return mBinding!!.root
+        return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onViewCreated")
+        }
         init(savedInstanceState)
     }
 
@@ -107,13 +121,54 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onActivityCreated")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onStart")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onResume")
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onPause")
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onStop")
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onDestroyView")
+        }
         mBinding.unbind()
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        if (enablePrintLifecycle()) {
+            LogUtils.tag(TAG_LIFECYCLE).v("onDestroy")
+        }
         mActivity = null
     }
 
@@ -133,4 +188,6 @@ abstract class BaseBindingFragment<B : ViewDataBinding>(@LayoutRes val layoutRes
     override fun dismissLoading() {
         progressDialog?.takeIf { it.isShowing }?.dismiss()
     }
+
+    open fun enablePrintLifecycle() = false
 }

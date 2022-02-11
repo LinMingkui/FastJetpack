@@ -8,6 +8,7 @@ import com.aisier.R
 import com.aisier.architecture.base.BaseBindingFragment
 import com.aisier.architecture.base.DataBindingArguments
 import com.aisier.databinding.FragmentSearchBinding
+import com.aisier.ui.adapter.RefreshStateAdapter
 import com.aisier.vm.ApiViewModel
 import com.apkfuns.logutils.LogUtils
 import kotlinx.coroutines.flow.collectLatest
@@ -15,7 +16,7 @@ import kotlinx.coroutines.flow.collectLatest
 class SearchFragment : BaseBindingFragment<FragmentSearchBinding>(R.layout.fragment_search) {
     private val model by lazy { getViewModel(ApiViewModel::class.java) }
     override fun init(savedInstanceState: Bundle?) {
-        model.getRecommendUser()
+        model.searchRepository("Android")
         mBinding.refreshLayout.setOnRefreshListener {
             model.adapter.refresh()
         }
@@ -28,10 +29,13 @@ class SearchFragment : BaseBindingFragment<FragmentSearchBinding>(R.layout.fragm
 
             }
         }
-//        mBinding.refreshLayout.
     }
 
-    override fun getDataBindingArguments(): DataBindingArguments? {
+    override fun getDataBindingArguments(): DataBindingArguments {
         return DataBindingArguments(BR.vm, model)
+    }
+
+    override fun enablePrintLifecycle(): Boolean {
+        return true
     }
 }

@@ -1,8 +1,10 @@
 package com.aisier.architecture.net.entity
 
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 open class ApiResponse<T>(
+    @SerializedName(value = "data", alternate = ["items"])
     open val data: T? = null,
     open val errorCode: Int? = null,
     open val errorMsg: String? = null,

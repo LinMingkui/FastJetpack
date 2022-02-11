@@ -1,8 +1,9 @@
 package com.aisier.net
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
 import com.aisier.architecture.net.base.BaseRepository
-import com.aisier.architecture.net.entity.ApiResponse
-import com.aisier.bean.RecommendUser
+import com.aisier.page.RepositorySource
 
 /**
  * @author 再战科技
@@ -15,10 +16,14 @@ object GithubRepository : BaseRepository() {
         GithubClient.service
     }
 
-    suspend fun getRecommendUser(page: Int, pageSize: Int): ApiResponse<List<RecommendUser>> {
-        return executeHttp {
-            service.getRecommendUser("0000", page, pageSize)
-        }
-    }
+    fun searchRepositories(
+        keyWords: String,
+        pageSize: Int = 20
+    ) = Pager(
+        PagingConfig(pageSize, initialLoadSize = pageSize, prefetchDistance = pageSize / 2),
+        1,
+    ) {
+        RepositorySource(keyWords)
+    }.flow
 
 }

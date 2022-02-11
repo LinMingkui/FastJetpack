@@ -2,8 +2,6 @@ package com.aisier.vm
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
 import androidx.paging.cachedIn
 import com.aisier.architecture.base.BaseViewModel
 import com.aisier.architecture.net.entity.ApiResponse
@@ -12,13 +10,14 @@ import com.aisier.architecture.net.launchRequestWithLoadingOnIO
 import com.aisier.architecture.net.parseData
 import com.aisier.bean.User
 import com.aisier.bean.WxArticleBean
+import com.aisier.net.GithubRepository
 import com.aisier.net.WanRepository
-import com.aisier.page.ArticleSource
-import com.aisier.ui.RecommendAdapter
+import com.aisier.ui.adapter.RefreshStateAdapter
+import com.aisier.ui.adapter.RepositoryAdapter
 import com.apkfuns.logutils.LogUtils
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 /**
@@ -31,7 +30,11 @@ import kotlinx.coroutines.launch
  */
 class ApiViewModel : BaseViewModel() {
 
-    val adapter = RecommendAdapter()
+    val adapter = RepositoryAdapter()
+
+    val concatAdapter = adapter.withLoadStateHeaderAndFooter(
+        RefreshStateAdapter { adapter.retry() },
+        RefreshStateAdapter { adapter.retry() })
 
 
     val articleLiveData: MutableLiveData<ApiResponse<List<WxArticleBean>>> = MutableLiveData()
@@ -59,19 +62,9 @@ class ApiViewModel : BaseViewModel() {
         return WanRepository.login(username, password)
     }
 
-    fun getRecommendUser() {
-//        viewModelScope.launch {
-//            Pager(
-//                PagingConfig(20, initialLoadSize = 20, prefetchDistance = 5),
-//                0,
-//            ) {
-//                ArticleSource()
-//            }.flow.collectLatest {
-//                adapter.submitData(it)
-//            }
-//        }
+    fun searchRepository(keyWords: String) {
         viewModelScope.launch {
-            WanRepository.getArticleList(0)
+            GithubRepository.searchRepositories(keyWords)
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     adapter.submitData(it)
