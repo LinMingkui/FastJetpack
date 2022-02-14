@@ -54,7 +54,7 @@ class ArticleSource : PagingSource<Int, Article>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Article> {
         val currPage = params.key ?: 0
         return try {
-            val response = RetrofitClient.service.getArticleList(currPage)
+            val response = RetrofitClient.wanService.getArticleList(currPage)
             LoadResult.Page(
                 response.data?.datas ?: listOf(),
                 if (currPage == 0) null else currPage - 1,

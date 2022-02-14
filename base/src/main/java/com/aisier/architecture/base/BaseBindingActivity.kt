@@ -59,20 +59,6 @@ abstract class BaseBindingActivity<B : ViewDataBinding>(@LayoutRes val layoutRes
                 is ViewEffect.HideLoading -> {
                     dismissLoading()
                 }
-                is ViewEffect.ShowToast -> {
-                    if (!it.msg.isNullOrBlank()) {
-                        toast(it.msg, it.duration)
-                    } else if (it.msgResId != 0) {
-                        toast(it.msgResId, it.duration)
-                    }
-                }
-                is ViewEffect.ShowSingleToast -> {
-                    if (!it.msg.isNullOrBlank()) {
-                        singleToast(it.msg, it.duration)
-                    } else if (it.msgResId != 0) {
-                        singleToast(it.msgResId, it.duration)
-                    }
-                }
             }
         }
     }

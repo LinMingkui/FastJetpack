@@ -4,11 +4,11 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.aisier.architecture.util.singleToast
 import com.aisier.bean.Repository
-import com.aisier.net.GithubClient
+import com.aisier.net.RetrofitClient
 import com.apkfuns.logutils.LogUtils
 
 /**
- * @author 再战科技
+ * @author
  * @date 2022/2/8
  * @description
  */
@@ -21,7 +21,7 @@ class RepositorySource(
         LogUtils.e("key=${params.key},size=${params.loadSize}");
         return try {
             val response =
-                GithubClient.service.searchRepositories(keyWords, params.loadSize, currPage)
+                RetrofitClient.githubService.searchRepositories(keyWords, params.loadSize, currPage)
             LoadResult.Page(
                 response.data ?: listOf(),
                 if (currPage <= 1) null else currPage - 1,

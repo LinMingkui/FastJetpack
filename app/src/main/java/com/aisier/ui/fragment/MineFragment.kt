@@ -28,7 +28,7 @@ class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_
         initData()
         mViewModel.articleLiveData.observeResult(viewLifecycleOwner) {
             onSuccess = {
-                mBinding?.tvContent?.text = it.toString()
+                mBinding.tvContent.text = it.toString()
                 LogUtils.i("Success")
             }
 //            onFailed = { c, m ->
@@ -58,7 +58,7 @@ class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_
             btnNet.setOnClickListener {
 //                mViewModel.fetchWxArticleFromNet()
 
-                launchRequestWithLoading({ WanRepository.fetchWxArticleFromNet() })
+                launchRequestWithLoading { WanRepository.fetchWxArticleFromNet() }
                     .asLiveData()
 //                    .observe(this@NetListFragment){
 //                        mViewModel.articleLiveData.value=it
@@ -73,12 +73,12 @@ class MineFragment : BaseBindingFragment<FragmentMineBinding>(R.layout.fragment_
 
             btnNetError.setOnClickListener {
                 showNetErrorPic(false)
-                launchRequestWithLoading({
+                launchRequestWithLoading {
                     WanRepository.login(
                         "FastJetpack",
                         "FastJetpack"
                     )
-                }).launchAndCollectIn(viewLifecycleOwner) {
+                }.launchAndCollectIn(viewLifecycleOwner) {
 
                 }
             }

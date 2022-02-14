@@ -7,8 +7,8 @@ import com.aisier.BR
 import com.aisier.R
 import com.aisier.architecture.base.BaseBindingFragment
 import com.aisier.architecture.base.DataBindingArguments
+import com.aisier.architecture.util.singleToast
 import com.aisier.databinding.FragmentSearchBinding
-import com.aisier.ui.adapter.RefreshStateAdapter
 import com.aisier.vm.ApiViewModel
 import com.apkfuns.logutils.LogUtils
 import kotlinx.coroutines.flow.collectLatest
@@ -16,18 +16,22 @@ import kotlinx.coroutines.flow.collectLatest
 class SearchFragment : BaseBindingFragment<FragmentSearchBinding>(R.layout.fragment_search) {
     private val model by lazy { getViewModel(ApiViewModel::class.java) }
     override fun init(savedInstanceState: Bundle?) {
-        model.searchRepository("Android")
         mBinding.refreshLayout.setOnRefreshListener {
             model.adapter.refresh()
         }
         lifecycleScope.launchWhenCreated {
             model.adapter.loadStateFlow.collectLatest {
-                LogUtils.i(it)
-                if (it.refresh is LoadState.NotLoading) {
+                if (it.refresh !is LoadState.Loading) {
                     mBinding.refreshLayout.isRefreshing = false
                 }
-
+                if (it.refresh is LoadState.Error && model.adapter.itemCount == 0) {
+//                    singleToast("Error")
+                }
             }
+        }
+        if (model.adapter.itemCount == 0) {
+            mBinding.refreshLayout.isRefreshing = true
+            model.searchRepository("Android")
         }
     }
 
@@ -35,7 +39,7 @@ class SearchFragment : BaseBindingFragment<FragmentSearchBinding>(R.layout.fragm
         return DataBindingArguments(BR.vm, model)
     }
 
-    override fun enablePrintLifecycle(): Boolean {
-        return true
-    }
+//    override fun enablePrintLifecycle(): Boolean {
+//        return true
+//    }
 }

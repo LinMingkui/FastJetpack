@@ -16,9 +16,9 @@ import kotlinx.coroutines.launch
  * 直接返回数据
  */
 fun <T> launchRequest(
-    requestBlock: suspend () -> ApiResponse<T>,
     startCallback: (() -> Unit)? = null,
     completeCallback: (() -> Unit)? = null,
+    requestBlock: suspend () -> ApiResponse<T>
 ): Flow<ApiResponse<T>> {
     return flow {
         emit(requestBlock())
@@ -36,14 +36,14 @@ fun <T> launchRequest(
  * 直接返回数据
  */
 fun <T> BaseViewModel.launchRequestWithLoading(
-    requestBlock: suspend () -> ApiResponse<T>,
     msg: String = "Loading...",
-    cancelable: Boolean = true
+    cancelable: Boolean = true,
+    requestBlock: suspend () -> ApiResponse<T>
 ): Flow<ApiResponse<T>> {
     return launchRequest(
-        { requestBlock.invoke() },
-        { viewEffectLiveData.value = ViewEffect.ShowLoading(msg, cancelable) },
-        { viewEffectLiveData.value = ViewEffect.HideLoading }
+        { showLoading(msg, cancelable) },
+        { hideLoading() },
+        { requestBlock.invoke() }
     )
 }
 
@@ -53,12 +53,12 @@ fun <T> BaseViewModel.launchRequestWithLoading(
  */
 fun <T> BaseViewModel.launchRequestOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
-    requestBlock: suspend () -> ApiResponse<T>,
     startCallback: (() -> Unit)? = null,
-    completeCallback: (() -> Unit)? = null
+    completeCallback: (() -> Unit)? = null,
+    requestBlock: suspend () -> ApiResponse<T>
 ) {
     viewModelScope.launch {
-        launchRequest(requestBlock, startCallback, completeCallback)
+        launchRequest(startCallback, completeCallback, requestBlock)
             .collect {
 //                if (it is ApiCompleteResponse) {
 //                    resultLiveData.postValue(it)
@@ -80,7 +80,7 @@ fun <T> BaseViewModel.launchRequestOnIO(
     listenerBuilder: ResultBuilder<T>.() -> Unit
 ) {
     viewModelScope.launch {
-        launchRequest(requestBlock, startCallback, completeCallback)
+        launchRequest(startCallback, completeCallback, requestBlock)
             .collect {
                 it.parseData(listenerBuilder)
             }
@@ -93,15 +93,15 @@ fun <T> BaseViewModel.launchRequestOnIO(
  */
 fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
-    requestBlock: suspend () -> ApiResponse<T>,
     msg: String = "Loading...",
-    cancelable: Boolean = true
+    cancelable: Boolean = true,
+    requestBlock: suspend () -> ApiResponse<T>
 ) {
     launchRequestOnIO(
         resultLiveData,
-        requestBlock,
-        { viewEffectLiveData.value = ViewEffect.ShowLoading(msg, cancelable) },
-        { viewEffectLiveData.value = ViewEffect.HideLoading }
+        { showLoading(msg, cancelable) },
+        { hideLoading() },
+        requestBlock
     )
 }
 
@@ -117,8 +117,8 @@ fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
 ) {
     launchRequestOnIO(
         requestBlock,
-        { viewEffectLiveData.value = ViewEffect.ShowLoading(msg, cancelable) },
-        { viewEffectLiveData.value = ViewEffect.HideLoading },
+        { showLoading(msg, cancelable) },
+        { hideLoading() },
         listenerBuilder
     )
 }
@@ -129,14 +129,14 @@ fun <T> BaseViewModel.launchRequestWithLoadingOnIO(
  * 直接返回数据
  */
 fun <T> IUiView.launchRequestWithLoading(
-    requestBlock: suspend () -> ApiResponse<T>,
     msg: String = "Loading...",
-    cancelable: Boolean = true
+    cancelable: Boolean = true,
+    requestBlock: suspend () -> ApiResponse<T>
 ): Flow<ApiResponse<T>> {
     return launchRequest(
-        { requestBlock.invoke() },
         { showLoading(msg, cancelable) },
-        { dismissLoading() }
+        { dismissLoading() },
+        { requestBlock.invoke() }
     )
 }
 
@@ -146,12 +146,12 @@ fun <T> IUiView.launchRequestWithLoading(
  */
 fun <T> IUiView.launchRequestOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
-    requestBlock: suspend () -> ApiResponse<T>,
     startCallback: (() -> Unit)? = null,
-    completeCallback: (() -> Unit)? = null
+    completeCallback: (() -> Unit)? = null,
+    requestBlock: suspend () -> ApiResponse<T>
 ) {
     lifecycleScope.launch {
-        launchRequest(requestBlock, startCallback, completeCallback)
+        launchRequest(startCallback, completeCallback, requestBlock)
             .collect {
                 resultLiveData.value = it
             }
@@ -169,7 +169,7 @@ fun <T> IUiView.launchRequestOnIO(
     listenerBuilder: ResultBuilder<T>.() -> Unit
 ) {
     lifecycleScope.launch {
-        launchRequest(requestBlock, startCallback, completeCallback)
+        launchRequest(startCallback, completeCallback, requestBlock)
             .collect {
                 it.parseData(listenerBuilder)
             }
@@ -182,15 +182,15 @@ fun <T> IUiView.launchRequestOnIO(
  */
 fun <T> IUiView.launchRequestWithLoadingOnIO(
     resultLiveData: MutableLiveData<ApiResponse<T>>,
-    requestBlock: suspend () -> ApiResponse<T>,
     msg: String = "Loading...",
-    cancelable: Boolean = true
+    cancelable: Boolean = true,
+    requestBlock: suspend () -> ApiResponse<T>
 ) {
     launchRequestOnIO(
         resultLiveData,
-        requestBlock,
         { showLoading(msg, cancelable) },
-        { dismissLoading() }
+        { dismissLoading() },
+        requestBlock
     )
 }
 

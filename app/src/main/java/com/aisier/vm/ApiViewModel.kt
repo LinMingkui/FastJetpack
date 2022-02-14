@@ -16,8 +16,8 @@ import com.aisier.ui.adapter.RefreshStateAdapter
 import com.aisier.ui.adapter.RepositoryAdapter
 import com.apkfuns.logutils.LogUtils
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 /**
@@ -43,12 +43,12 @@ class ApiViewModel : BaseViewModel() {
 
     fun fetchWxArticleFromNet() {
         viewModelScope.launch {
-            launchRequestWithLoading({ WanRepository.fetchWxArticleFromNet() }).collect {
+            launchRequestWithLoading { WanRepository.fetchWxArticleFromNet() }.collect {
                 it.parseData { LogUtils.i(it.javaClass.simpleName) }
                 articleLiveData.value = it
             }
         }
-        launchRequestWithLoadingOnIO(articleLiveData, { WanRepository.fetchWxArticleFromNet() })
+        launchRequestWithLoadingOnIO(articleLiveData) { WanRepository.fetchWxArticleFromNet() }
     }
 
     suspend fun requestNetError() {
