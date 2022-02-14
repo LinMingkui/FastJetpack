@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.aisier.ui.fragment.SearchFragment"
+        android:name="com.lmk.jetpack.ui.fragment.SearchFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_search">
         <action
@@ -20,12 +20,12 @@
 
     <fragment
         android:id="@+id/netListFragment"
-        android:name="com.aisier.ui.fragment.MineFragment"
+        android:name="com.lmk.jetpack.ui.fragment.MineFragment"
         android:label="fragment_net_list"
         tools:layout="@layout/fragment_mine" />
     <fragment
         android:id="@+id/savedStateFragment"
-        android:name="com.aisier.ui.fragment.DownloadFragment"
+        android:name="com.lmk.jetpack.ui.fragment.DownloadFragment"
         android:label="fragment_saved_state"
         tools:layout="@layout/fragment_download" />
 </navigation>

@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.aisier.vm.ApiViewModel" />
+            type="com.lmk.jetpack.vm.ApiViewModel" />
 
     </data>
 

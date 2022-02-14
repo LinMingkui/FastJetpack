@@ -9,7 +9,7 @@ android {
     def android = rootProject.ext.android
 
     defaultConfig {
-        applicationId "com.fastjetpack"
+        applicationId "com.lmk.jetpack"
         compileSdk android.compileSdkVersion
         minSdk android.minSdkVersion
         targetSdk android.targetSdkVersion

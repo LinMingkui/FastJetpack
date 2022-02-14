@@ -6,14 +6,14 @@
 
     <fragment
         android:id="@+id/searchFragment"
-        android:name="com.aisier.ui.fragment.SearchFragment"
+        android:name="com.lmk.jetpack.ui.fragment.SearchFragment"
         android:label="Search" />
     <fragment
         android:id="@+id/downloadFragment"
-        android:name="com.aisier.ui.fragment.DownloadFragment"
+        android:name="com.lmk.jetpack.ui.fragment.DownloadFragment"
         android:label="Download" />
     <fragment
         android:id="@+id/mineFragment"
-        android:name="com.aisier.ui.fragment.MineFragment"
+        android:name="com.lmk.jetpack.ui.fragment.MineFragment"
         android:label="Mine" />
 </navigation>
