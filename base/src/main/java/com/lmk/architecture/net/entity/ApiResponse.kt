@@ -1,13 +1,21 @@
 package com.lmk.architecture.net.entity
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.FromJson
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.io.Serializable
 
+
+@Keep
+@JsonClass(generateAdapter = true)
 open class ApiResponse<T>(
-    @SerializedName(value = "data", alternate = ["items"])
+    @Json(name = "items")
     open val data: T? = null,
     open val errorCode: Int? = null,
     open val errorMsg: String? = null,
+    @Json(ignore = true)
     open val error: Throwable? = null,
 ) : Serializable {
     val isSuccess: Boolean
@@ -31,3 +39,4 @@ data class ApiFailedResponse<T>(override val errorCode: Int?, override val error
 
 data class ApiErrorResponse<T>(val throwable: Throwable) :
     ApiResponse<T>(error = throwable, errorMsg = throwable.localizedMessage)
+

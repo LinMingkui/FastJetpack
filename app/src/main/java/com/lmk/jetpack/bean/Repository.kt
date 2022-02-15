@@ -1,173 +1,170 @@
 package com.lmk.jetpack.bean
 
+import androidx.annotation.Keep
 import androidx.recyclerview.widget.DiffUtil
-import com.google.gson.annotations.SerializedName
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
-
-/**
- * @author 再战科技
- * @date 2022/2/10
- * @description
- */
+@Keep
+@JsonClass(generateAdapter = true)
 data class Repository(
-    @SerializedName("allow_forking")
+    @Json(name = "allow_forking")
     val allowForking: Boolean = false,
-    @SerializedName("archive_url")
+    @Json(name = "archive_url")
     val archiveUrl: String = "",
-    @SerializedName("archived")
+    @Json(name = "archived")
     val archived: Boolean = false,
-    @SerializedName("assignees_url")
+    @Json(name = "assignees_url")
     val assigneesUrl: String = "",
-    @SerializedName("blobs_url")
+    @Json(name = "blobs_url")
     val blobsUrl: String = "",
-    @SerializedName("branches_url")
+    @Json(name = "branches_url")
     val branchesUrl: String = "",
-    @SerializedName("clone_url")
+    @Json(name = "clone_url")
     val cloneUrl: String = "",
-    @SerializedName("collaborators_url")
+    @Json(name = "collaborators_url")
     val collaboratorsUrl: String = "",
-    @SerializedName("comments_url")
+    @Json(name = "comments_url")
     val commentsUrl: String = "",
-    @SerializedName("commits_url")
+    @Json(name = "commits_url")
     val commitsUrl: String = "",
-    @SerializedName("compare_url")
+    @Json(name = "compare_url")
     val compareUrl: String = "",
-    @SerializedName("contents_url")
+    @Json(name = "contents_url")
     val contentsUrl: String = "",
-    @SerializedName("contributors_url")
+    @Json(name = "contributors_url")
     val contributorsUrl: String = "",
-    @SerializedName("created_at")
+    @Json(name = "created_at")
     val createdAt: String = "",
-    @SerializedName("default_branch")
+    @Json(name = "default_branch")
     val defaultBranch: String = "",
-    @SerializedName("deployments_url")
+    @Json(name = "deployments_url")
     val deploymentsUrl: String = "",
-    @SerializedName("description")
+    @Json(name = "description")
     val description: String = "",
-    @SerializedName("disabled")
+    @Json(name = "disabled")
     val disabled: Boolean = false,
-    @SerializedName("downloads_url")
+    @Json(name = "downloads_url")
     val downloadsUrl: String = "",
-    @SerializedName("events_url")
+    @Json(name = "events_url")
     val eventsUrl: String = "",
-    @SerializedName("fork")
+    @Json(name = "fork")
     val fork: Boolean = false,
-    @SerializedName("forks")
+    @Json(name = "forks")
     val forks: Int = 0,
-    @SerializedName("forks_count")
+    @Json(name = "forks_count")
     val forksCount: Int = 0,
-    @SerializedName("forks_url")
+    @Json(name = "forks_url")
     val forksUrl: String = "",
-    @SerializedName("full_name")
+    @Json(name = "full_name")
     val fullName: String = "",
-    @SerializedName("git_commits_url")
+    @Json(name = "git_commits_url")
     val gitCommitsUrl: String = "",
-    @SerializedName("git_refs_url")
+    @Json(name = "git_refs_url")
     val gitRefsUrl: String = "",
-    @SerializedName("git_tags_url")
+    @Json(name = "git_tags_url")
     val gitTagsUrl: String = "",
-    @SerializedName("git_url")
+    @Json(name = "git_url")
     val gitUrl: String = "",
-    @SerializedName("has_downloads")
+    @Json(name = "has_downloads")
     val hasDownloads: Boolean = false,
-    @SerializedName("has_issues")
+    @Json(name = "has_issues")
     val hasIssues: Boolean = false,
-    @SerializedName("has_pages")
+    @Json(name = "has_pages")
     val hasPages: Boolean = false,
-    @SerializedName("has_projects")
+    @Json(name = "has_projects")
     val hasProjects: Boolean = false,
-    @SerializedName("has_wiki")
+    @Json(name = "has_wiki")
     val hasWiki: Boolean = false,
-    @SerializedName("homepage")
+    @Json(name = "homepage")
     val homepage: String = "",
-    @SerializedName("hooks_url")
+    @Json(name = "hooks_url")
     val hooksUrl: String = "",
-    @SerializedName("html_url")
+    @Json(name = "html_url")
     val htmlUrl: String = "",
-    @SerializedName("id")
+    @Json(name = "id")
     val id: Int = 0,
-    @SerializedName("is_template")
+    @Json(name = "is_template")
     val isTemplate: Boolean = false,
-    @SerializedName("issue_comment_url")
+    @Json(name = "issue_comment_url")
     val issueCommentUrl: String = "",
-    @SerializedName("issue_events_url")
+    @Json(name = "issue_events_url")
     val issueEventsUrl: String = "",
-    @SerializedName("issues_url")
+    @Json(name = "issues_url")
     val issuesUrl: String = "",
-    @SerializedName("keys_url")
+    @Json(name = "keys_url")
     val keysUrl: String = "",
-    @SerializedName("labels_url")
+    @Json(name = "labels_url")
     val labelsUrl: String = "",
-    @SerializedName("language")
+    @Json(name = "language")
     val language: String = "",
-    @SerializedName("languages_url")
+    @Json(name = "languages_url")
     val languagesUrl: String = "",
-    @SerializedName("license")
+    @Json(name = "license")
     val license: License = License(),
-    @SerializedName("merges_url")
+    @Json(name = "merges_url")
     val mergesUrl: String = "",
-    @SerializedName("milestones_url")
+    @Json(name = "milestones_url")
     val milestonesUrl: String = "",
-    @SerializedName("mirror_url")
+    @Json(name = "mirror_url")
     val mirrorUrl: String = "",
-    @SerializedName("name")
+    @Json(name = "name")
     val name: String = "",
-    @SerializedName("node_id")
+    @Json(name = "node_id")
     val nodeId: String = "",
-    @SerializedName("notifications_url")
+    @Json(name = "notifications_url")
     val notificationsUrl: String = "",
-    @SerializedName("open_issues")
+    @Json(name = "open_issues")
     val openIssues: Int = 0,
-    @SerializedName("open_issues_count")
+    @Json(name = "open_issues_count")
     val openIssuesCount: Int = 0,
-    @SerializedName("owner")
+    @Json(name = "owner")
     val owner: Owner = Owner(),
-    @SerializedName("private")
+    @Json(name = "private")
     val `private`: Boolean = false,
-    @SerializedName("pulls_url")
+    @Json(name = "pulls_url")
     val pullsUrl: String = "",
-    @SerializedName("pushed_at")
+    @Json(name = "pushed_at")
     val pushedAt: String = "",
-    @SerializedName("releases_url")
+    @Json(name = "releases_url")
     val releasesUrl: String = "",
-    @SerializedName("score")
+    @Json(name = "score")
     val score: Double = 0.0,
-    @SerializedName("size")
+    @Json(name = "size")
     val size: Int = 0,
-    @SerializedName("ssh_url")
+    @Json(name = "ssh_url")
     val sshUrl: String = "",
-    @SerializedName("stargazers_count")
+    @Json(name = "stargazers_count")
     val stargazersCount: Int = 0,
-    @SerializedName("stargazers_url")
+    @Json(name = "stargazers_url")
     val stargazersUrl: String = "",
-    @SerializedName("statuses_url")
+    @Json(name = "statuses_url")
     val statusesUrl: String = "",
-    @SerializedName("subscribers_url")
+    @Json(name = "subscribers_url")
     val subscribersUrl: String = "",
-    @SerializedName("subscription_url")
+    @Json(name = "subscription_url")
     val subscriptionUrl: String = "",
-    @SerializedName("svn_url")
+    @Json(name = "svn_url")
     val svnUrl: String = "",
-    @SerializedName("tags_url")
+    @Json(name = "tags_url")
     val tagsUrl: String = "",
-    @SerializedName("teams_url")
+    @Json(name = "teams_url")
     val teamsUrl: String = "",
-    @SerializedName("topics")
+    @Json(name = "topics")
     val topics: List<String> = listOf(),
-    @SerializedName("trees_url")
+    @Json(name = "trees_url")
     val treesUrl: String = "",
-    @SerializedName("updated_at")
+    @Json(name = "updated_at")
     val updatedAt: String = "",
-    @SerializedName("url")
+    @Json(name = "url")
     val url: String = "",
-    @SerializedName("visibility")
+    @Json(name = "visibility")
     val visibility: String = "",
-    @SerializedName("watchers")
+    @Json(name = "watchers")
     val watchers: Int = 0,
-    @SerializedName("watchers_count")
+    @Json(name = "watchers_count")
     val watchersCount: Int = 0
 ) {
-
     companion object {
         val diffCallback = object : DiffUtil.ItemCallback<Repository>() {
             override fun areItemsTheSame(oldItem: Repository, newItem: Repository): Boolean {
@@ -184,54 +181,58 @@ data class Repository(
     }
 }
 
+@Keep
+@JsonClass(generateAdapter = true)
 data class License(
-    @SerializedName("key")
+    @Json(name = "key")
     val key: String = "",
-    @SerializedName("name")
+    @Json(name = "name")
     val name: String = "",
-    @SerializedName("node_id")
+    @Json(name = "node_id")
     val nodeId: String = "",
-    @SerializedName("spdx_id")
+    @Json(name = "spdx_id")
     val spdxId: String = "",
-    @SerializedName("url")
+    @Json(name = "url")
     val url: String = ""
 )
 
+@Keep
+@JsonClass(generateAdapter = true)
 data class Owner(
-    @SerializedName("avatar_url")
+    @Json(name = "avatar_url")
     val avatarUrl: String = "",
-    @SerializedName("events_url")
+    @Json(name = "events_url")
     val eventsUrl: String = "",
-    @SerializedName("followers_url")
+    @Json(name = "followers_url")
     val followersUrl: String = "",
-    @SerializedName("following_url")
+    @Json(name = "following_url")
     val followingUrl: String = "",
-    @SerializedName("gists_url")
+    @Json(name = "gists_url")
     val gistsUrl: String = "",
-    @SerializedName("gravatar_id")
+    @Json(name = "gravatar_id")
     val gravatarId: String = "",
-    @SerializedName("html_url")
+    @Json(name = "html_url")
     val htmlUrl: String = "",
-    @SerializedName("id")
+    @Json(name = "id")
     val id: Int = 0,
-    @SerializedName("login")
+    @Json(name = "login")
     val login: String = "",
-    @SerializedName("node_id")
+    @Json(name = "node_id")
     val nodeId: String = "",
-    @SerializedName("organizations_url")
+    @Json(name = "organizations_url")
     val organizationsUrl: String = "",
-    @SerializedName("received_events_url")
+    @Json(name = "received_events_url")
     val receivedEventsUrl: String = "",
-    @SerializedName("repos_url")
+    @Json(name = "repos_url")
     val reposUrl: String = "",
-    @SerializedName("site_admin")
+    @Json(name = "site_admin")
     val siteAdmin: Boolean = false,
-    @SerializedName("starred_url")
+    @Json(name = "starred_url")
     val starredUrl: String = "",
-    @SerializedName("subscriptions_url")
+    @Json(name = "subscriptions_url")
     val subscriptionsUrl: String = "",
-    @SerializedName("type")
+    @Json(name = "type")
     val type: String = "",
-    @SerializedName("url")
+    @Json(name = "url")
     val url: String = ""
 )

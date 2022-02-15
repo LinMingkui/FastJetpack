@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
+    id("com.google.devtools.ksp").version("1.6.0-1.0.1")
 }
 
 android {
@@ -46,5 +47,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:1.13.0"
 
 }

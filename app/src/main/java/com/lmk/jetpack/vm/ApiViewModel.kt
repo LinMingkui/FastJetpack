@@ -67,6 +67,7 @@ class ApiViewModel : BaseViewModel() {
             GithubRepository.searchRepositories(keyWords)
                 .cachedIn(viewModelScope)
                 .collectLatest {
+                    LogUtils.i(it)
                     adapter.submitData(it)
                 }
         }
